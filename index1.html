@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siraj Transport Kadapa</title>
+    <style>
+           body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #2C3E50;
+            color: #ECF0F1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            border: 3px dashed #E74C3C;
+        }
+
+        header {
+            text-align: center;
+            position: relative;
+            margin-bottom: 20px;
+            border-bottom: 3px double #E74C3C;
+            padding-bottom: 20px;
+        }
+
+        header img {
+            position: absolute;
+            top: -10px;
+            height: 100px;
+        }
+
+        header .logo {
+            left: 75px;
+        }
+
+        header .orga-logo {
+            right: 10px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            color: #E74C3C;
+            margin: 0;
+            padding: 0;
+            padding-top: 100px;
+        }
+
+        header h2 {
+            color: #ECF0F1;
+            margin: 0;
+            padding: 0;
+        }
+
+        header .owner-photo {
+            position: absolute;
+            bottom: -70px; /* Adjust based on image height */
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            height: 70px;
+            width: 70px;
+            border: 2px solid #E74C3C;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+            border: 3px dashed #E74C3C;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        form label {
+            font-weight: bold;
+            border-bottom: 2px solid #E74C3C;
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            display: block;
+        }
+
+        form input, form select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: #34495E;
+            color: #ECF0F1;
+        }
+
+        #map {
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+            border: 3px dashed #E74C3C;
+            border-radius: 10px;
+        }
+
+        #distance-time {
+            margin-top: 20px;
+            border: 3px dashed #E74C3C;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        #results {
+            margin-top: 20px;
+            border: 3px dashed #E74C3C;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #E74C3C;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            grid-column: span 2;
+            text-align: center;
+            border: 2px solid #ECF0F1;
+        }
+
+        button:hover {
+            background-color: #C0392B;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 3px dashed #E74C3C;
+            border-radius: 10px;
+        }
+
+        .section h3 {
+            margin-top: 0;
+            border-bottom: 2px solid #E74C3C;
+            padding-bottom: 10px;
+        }
+
+        .section p {
+            margin-bottom: 0;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCz5SbORbArYW-nalt-ry0L3-BJ0rHRQ70&callback=initMap" async defer></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="logo.png" alt="Company Logo" class="logo">
+            <h1>Siraj Transport Kadapa</h1>
+            <h2>proprietor: Shaik Sirajuddin</h2>
+            <h3>mobile: 9949839336</h3>
+            <p>Affiliated with ORGA FEED PVT LTD</p>
+        </header>
+
+        <section id="dashboard">
+            <h3>Dashboard</h3>
+            <div class="summary">
+                <p>We transport goods of Orga Feed Pvt Ltd to all Dodla Dairy's at their locations.</p>
+            </div>
+        </section>
+
+        <section id="lorry-records">
+            <h3>Lorry Records</h3>
+            <form>
+                <label for="lorry-type">Lorry Type:</label>
+                <select id="lorry-type">
+                    <option value="12-tyres">12 Tyres</option>
+                    <option value="10-tyres">10 Tyres</option>
+                </select>
+                
+                <label for="lorry-number">Lorry Number Plate:</label>
+                <input type="text" id="lorry-number" required>
+
+                <label for="driver-name">Driver's Name:</label>
+                <input type="text" id="driver-name" required>
+            </form>
+        </section>
+
+        <section id="google-map">
+            <h3>Google Map</h3>
+            <div id="map"></div>
+            <div id="distance-time">
+                <p>Distance: <span id="distance"></span></p>
+                <p>Time: <span id="time"></span></p>
+            </div>
+            <form>
+                <label for="start-destination-map">Start Destination:</label>
+                <input type="text" id="start-destination-map">
+
+                <label for="end-destination-map">End Destination:</label>
+                <input type="text" id="end-destination-map">
+
+                <button type="button" onclick="calculateRoute()">Calculate Route</button>
+            </form>
+        </section>
+
+        <section id="transport-record-management">
+            <h3>Transport Record Management</h3>
+            <form>
+                <label for="total-distance">Total Distance Traveled (kms):</label>
+                <input type="text" id="total-distance" oninput="calculateTotalDistance()" required>
+
+                <label for="outward-tons">Outward Route Tons:</label>
+                <input type="number" id="outward-tons">
+
+                <label for="return-tons">Return Route Tons:</label>
+                <input type="number" id="return-tons">
+
+                <label for="start-destination">Start Destination:</label>
+                <input type="text" id="start-destination">
+
+                <label for="end-destination">End Destination:</label>
+                <input type="text" id="end-destination">
+
+                <label for="diesel-consumed">Diesel Consumed (liters):</label>
+                <input type="number" id="diesel-consumed">
+
+                <label for="transport-cost">Transport Cost:</label>
+                <input type="number" id="transport-cost" oninput="calculateDriverCleanerCost()">
+
+                <label for="driver-cleaner-cost">Driver and Cleaner Cost:</label>
+                <input type="number" id="driver-cleaner-cost" readonly>
+
+                <label for="diesel-other-expenses">Diesel and Other Expenses:</label>
+                <input type="number" id="diesel-other-expenses">
+
+                <button type="button" onclick="calculateMileageAndProfit()">Calculate Mileage and Profit</button>
+            </form>
+            <div id="results">
+                <p>Mileage: <span id="mileage"></span></p>
+                <p>Profit: <span id="profit"></span></p>
+            </div>
+        </section>
+
+        <button id="download-pdf" onclick="generatePDF()">Download PDF</button>
+    </div>
+    <script>
+        let map;
+        let directionsService;
+        let directionsRenderer;
+
+        function initMap() {
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer();
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 14.467354, lng: 78.824134 },
+                zoom: 8
+            });
+            directionsRenderer.setMap(map);
+        }
+
+        function calculateRoute() {
+            const start = document.getElementById('start-destination-map').value;
+            const end = document.getElementById('end-destination-map').value;
+
+            if (start && end) {
+                directionsService.route(
+                    {
+                        origin: start,
+                        destination: end,
+                        travelMode: 'DRIVING'
+                    },
+                    (response, status) => {
+                        if (status === 'OK') {
+                            directionsRenderer.setDirections(response);
+                            const route = response.routes[0];
+                            const summary = route.legs[0];
+                            document.getElementById('distance').textContent = summary.distance.text;
+                            document.getElementById('time').textContent = summary.duration.text;
+                        } else {
+                            window.alert('Directions request failed due to ' + status);
+                        }
+                    }
+                );
+            }
+        }
+
+        function calculateTotalDistance() {
+            const totalDistanceField = document.getElementById('total-distance');
+            const value = totalDistanceField.value;
+            
+            if (value.includes('=')) {
+                const distanceValues = value.split('+').map(val => parseFloat(val.trim()));
+
+                if (distanceValues.some(isNaN)) {
+                    totalDistanceField.value = 'Invalid input';
+                    return;
+                }
+
+                const totalDistance = distanceValues.reduce((acc, val) => acc + val, 0);
+                totalDistanceField.value = totalDistance;
+            }
+        }
+
+        function calculateDriverCleanerCost() {
+            const transportCost = parseFloat(document.getElementById('transport-cost').value) || 0;
+            const driverCleanerCost = transportCost * 0.12;
+            document.getElementById('driver-cleaner-cost').value = driverCleanerCost.toFixed(2);
+        }
+
+        function calculateMileageAndProfit() {
+            const totalDistance = parseFloat(document.getElementById('total-distance').value);
+            const dieselConsumed = parseFloat(document.getElementById('diesel-consumed').value);
+            const transportCost = parseFloat(document.getElementById('transport-cost').value);
+            const driverAndCleanerCost = parseFloat(document.getElementById('driver-cleaner-cost').value);
+            const dieselOtherExpenses = parseFloat(document.getElementById('diesel-other-expenses').value);
+
+            if (!isNaN(totalDistance) && !isNaN(dieselConsumed) && dieselConsumed > 0) {
+                const mileage = totalDistance / dieselConsumed;
+                document.getElementById('mileage').textContent = mileage.toFixed(2) + ' km/l';
+            } else {
+                document.getElementById('mileage').textContent = 'Invalid data';
+            }
+
+            if (!isNaN(transportCost) && !isNaN(driverAndCleanerCost) && !isNaN(dieselOtherExpenses)) {
+                const profit = transportCost - driverAndCleanerCost - dieselOtherExpenses;
+                document.getElementById('profit').textContent = '₹' + profit.toFixed(2);
+            } else {
+                document.getElementById('profit').textContent = 'Invalid data';
+            }
+        }
+
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+
+            // Add Date
+            const date = new Date();
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const formattedDate = `${year}-${month}-${day}`;
+
+            pdf.setFontSize(12);
+            pdf.text(`Date: ${formattedDate}`, 20, 20);
+
+            // Add Company Name Centered
+            pdf.setFontSize(16);
+            pdf.text('Siraj Transport Kadapa', pdf.internal.pageSize.width / 2, 40, { align: 'center' });
+
+            pdf.setFontSize(12);
+            pdf.text('Affiliated with Orga Feed PVT LTD', pdf.internal.pageSize.width / 2, 50, { align: 'center' });
+
+            pdf.setLineWidth(0.5);
+            pdf.line(10, 55, pdf.internal.pageSize.width - 10, 55); // Top Border
+
+            // Add Details
+            pdf.setFontSize(12);
+            pdf.text(20, 65, 'proprietor: Shaik Sirajuddin');
+            pdf.text(20, 75, 'contact:9949839336.');
+
+            const lorryType = document.getElementById('lorry-type').value;
+            const lorryNumber = document.getElementById('lorry-number').value;
+            const driverName = document.getElementById('driver-name').value;
+            pdf.text(20, 95, `Lorry Type: ${lorryType}`);
+            pdf.text(20, 105, `Lorry Number Plate: ${lorryNumber}`);
+            pdf.text(20, 115, `Driver's Name: ${driverName}`);
+
+            const totalDistance = document.getElementById('total-distance').value;
+            const outwardTons = document.getElementById('outward-tons').value;
+            const returnTons = document.getElementById('return-tons').value;
+            const startDestination = document.getElementById('start-destination').value;
+            const endDestination = document.getElementById('end-destination').value;
+            const dieselConsumed = document.getElementById('diesel-consumed').value;
+            const transportCost = document.getElementById('transport-cost').value;
+            const driverCleanerCost = document.getElementById('driver-cleaner-cost').value;
+            const dieselOtherExpenses = document.getElementById('diesel-other-expenses').value;
+
+            pdf.text(20, 135, `Total Distance Traveled (kms): ${totalDistance}`);
+            pdf.text(20, 145, `Outward Route Tons: ${outwardTons}`);
+            pdf.text(20, 155, `Return Route Tons: ${returnTons}`);
+            pdf.text(20, 165, `Start Destination: ${startDestination}`);
+            pdf.text(20, 175, `End Destination: ${endDestination}`);
+            pdf.text(20, 185, `Diesel Consumed (liters): ${dieselConsumed}`);
+            pdf.text(20, 195, `Transport Cost: ${transportCost}`);
+            pdf.text(20, 205, `Driver and Cleaner Cost: ${driverCleanerCost}`);
+            pdf.text(20, 215, `Diesel and Other Expenses: ${dieselOtherExpenses}`);
+
+            const mileage = document.getElementById('mileage').textContent;
+            const profit = document.getElementById('profit').textContent;
+
+            pdf.text(20, 225, `Mileage: ${mileage}`);
+            pdf.text(20, 235, `Profit: ${profit}`);
+
+            pdf.line(10, pdf.internal.pageSize.height - 50, pdf.internal.pageSize.width - 10, pdf.internal.pageSize.height - 50); // Bottom Border
+
+            pdf.save(`record-${formattedDate}.pdf`);
+        }
+    </script>
+</body>
+</html>
